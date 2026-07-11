@@ -1,43 +1,39 @@
-# 🏆 World Cup Fantasy Optimization Engine
+# 🏆 World Cup 2026 Fantasy Optimization Engine
 
-An advanced, cross-platform algorithmic tool designed to compute the mathematically optimal roster configuration for World Cup Fantasy football leagues. 
+### ✨ Created By: Sakshi.M ✨
 
-This project demonstrates a multi-language architecture: high-performance data processing and constraint solving handled via compiled C++, bound seamlessly to a modern, responsive web application via Python & Streamlit.
-
----
-
-## 🚀 Key Features
-
-* **C++ Core Engine:** Utilizes an optimized 0/1 Multi-Constraint Knapsack algorithm implemented using Dynamic Programming to respect strict budget limitations and country roster caps (maximum of 3 assets from any single country federation).
-* **Predictive Analytics:** Implements a customizable weighted trend formula profiling recent performance form parameters directly against historical baseline metrics.
-* **Interactive UX:** Built-in interactive dashboard allowing real-time "What-If" scenario tracking, custom budget filtering, tactical grid layout modules, and beautiful visual budget allocation charts.
+Welcome to the **World Cup 2026 Fantasy Optimization Engine**, a specialized analytical platform designed to assemble the highest-performing player lineups for the 2026 FIFA World Cup under strict competitive federation constraints.
 
 ---
 
-## 🛠️ Tech Stack & Architecture
+## 🚀 Executive System Architecture
+This engine evaluates multi-dimensional player profiles against rigorous professional tournament rules. Unlike legacy configurations, this production-ready engine is written **entirely in pure, lightweight Python**, maximizing execution velocity and eliminating complex local compilation setups.
 
-* **Backend:** C++17 (Dynamic Programming, Memory-Safe Structs, Explicit Pointers)
-* **Frontend:** Python 3.x, Streamlit, Pandas
-* **Interoperability Layer:** `ctypes` foreign function interface (FFI) for direct memory mapping
-
-### Data System Topology
-+---------------------------+        Data Marshaling (ctypes)       +----------------------------+
-|   Python Presentation     |  --------------------------------->  |   Compiled C++ Core        |
-|  Streamlit State Layer    |                                      |  Multi-Dim Knapsack Solver |
-|  (User Input Telemetry)   |  <---------------------------------  | (Positional & Country Caps)|
-+---------------------------+       Native Memory Unpacking        +----------------------------+
-
+### 📋 Core Tactical Constraints
+* **Fixed Structural Matrix:** The platform is natively calibrated to the highly stable **4-3-3 tactical formation** (1 Goalkeeper, 4 Defenders, 3 Midfielders, 3 Forwards).
+* **National Federation Quota:** To maintain tournament integrity, the system dynamically enforces a professional constraint limiting roster selection to a maximum of **3 active assets per individual national country federation**.
+* **Value-Driven Optimization:** Operates an unrestricted greedy performance-evaluation engine that prioritizes maximum competitive yield based on heavily weighted real-time form parameters.
 
 ---
 
-## 📦 Compilation & Setup
+## 🛠️ Key Technical Implementations & Updates
+* **Eliminated C++ Dependency:** Removed legacy `optimizer.cpp` components, routing all logic through Python native dictionaries and Pandas DataFrames to eliminate memory segmentation and layout errors.
+* **Unrestricted Financial Mapping:** Removed rigid budget ceiling boundaries that forced optimization failure modes. The engine now calculates absolute performance efficiency and maps individual asset spending.
+* **Dynamic Capital Tracking:** Features individual visual asset profiles displaying exactly how much "Money Spent ($M)" was allocated to each specific world star.
+* **Fail-Safe Frontend Architecture:** Replaced structural grid column wrappers with sequential streaming metric blocks, eliminating screen layout crashes under variable roster yields.
 
-### 1. Compile the C++ Shared Library
-Execute the native compilation sequence within your shell terminal to match your deployment environment's host architecture dependencies:
+---
 
+## 💻 Tech Stack
+* **Language:** Python 3.10+
+* **Framework:** Streamlit (UI & Reactive Execution Layers)
+* **Data Pipelines:** Pandas (Matrix Manipulation)
+
+---
+
+## 🏁 Getting Started & Local Deployment
+
+### 1. Clone the Repository
 ```bash
-# For Linux/macOS
-g++ -O3 -shared -fPIC -o liboptimizer.so optimizer.cpp
-
-# For Windows
-g++ -O3 -shared -o liboptimizer.dll optimizer.cpp
+git clone [https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git](https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git)
+cd YOUR_REPO_NAME
