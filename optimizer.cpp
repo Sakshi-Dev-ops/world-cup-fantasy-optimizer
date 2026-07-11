@@ -10,7 +10,7 @@ struct Player {
     int cost;
     double performance_value;
     char position[8];
-    char team[32];
+    char team[64]; // Expanded to 64 bytes to perfectly fit long flag emoji string sequences
 };
 
 extern "C" {
@@ -48,7 +48,7 @@ extern "C" {
         int count_gk = 0, count_def = 0, count_mid = 0, count_fwd = 0;
         
         // Federation tracking array map (Enforces Max 3 players from any single country)
-        char team_registry[50][32];
+        char team_registry[50][64]; // Expanded to match struct width limits
         int team_counts[50] = {0};
         int unique_teams = 0;
 
