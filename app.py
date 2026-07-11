@@ -74,7 +74,7 @@ if st.button("🚀 Compute Globally Optimal Lineup"):
         col2.metric("Total Budget Spent", f"${res_df['Cost ($M)'].sum()}M / ${budget_limit}M")
         col3.metric("Projected Value Score", f"{res_df['History'].sum() + res_df['Form'].sum():.1f}")
         
-        st.subheader("Your AI-Optimized World Cup Dream Team")
+        st.subheader("Your Optimized World Cup Dream Team")
         st.table(res_df)
         
         st.subheader("Budget Allocation Strategy")
