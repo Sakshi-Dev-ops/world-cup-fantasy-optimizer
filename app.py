@@ -18,9 +18,10 @@ st.markdown("---")
 st.sidebar.header("⚙️ Optimization Parameters")
 budget_limit = st.sidebar.slider("💰 Total Team Budget ($M)", min_value=40, max_value=150, value=100)
 
+# Kept only the first (4-3-3) and the last (5-3-2) formations
 formation = st.sidebar.selectbox(
     "📋 Select Tactical Formation Matrix",
-    ["4-3-3", "4-4-2", "3-5-2", "5-3-2"]
+    ["4-3-3", "5-3-2"]
 )
 
 req_def = int(formation.split("-")[0])
@@ -62,7 +63,6 @@ with st.expander("🗂️ View Complete Registered 2026 Player Pool Database", e
 
 # --- PURE PYTHON MULTI-CONSTRAINT OPTIMIZER ENGINE ---
 def python_knapsack_optimization(player_df, budget, r_def, r_mid, r_fwd):
-    # Sort items based on value density to optimize choices
     items = player_df.sort_values(by='calculated_value', ascending=False).to_dict('records')
     
     selected_ids = []
@@ -120,7 +120,6 @@ if st.button("⚡ Execute Combinatorial Optimization"):
         
         st.subheader(f"🛡️ Target Roster Composition Grid ({formation})")
         
-        # FIXED: Use a stable, wrapping 4-column layout to render player cards perfectly
         card_cols = st.columns(4)
         for index, (df_idx, row) in enumerate(res_df.iterrows()):
             with card_cols[index % 4]:
