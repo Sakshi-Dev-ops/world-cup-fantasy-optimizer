@@ -107,12 +107,13 @@ if st.button("⚡ Execute Combinatorial Optimization"):
     
     st.markdown("---")
     
-    st.subheader(f"🛡️ Target Roster Composition Grid ({formation})")
+    # --- HERE IS THE COOL PART RE-ADDED SAFELY ---
+    st.subheader(f"🛡️ Optimized Roster Profile Breakdown ({formation})")
     
-    final_table = res_df[["position", "name", "display_team", "cost", "form_rating"]].copy()
-    final_table.columns = ["Position", "Player Name", "National Team", "Money Spent ($M)", "Form Rating"]
-    st.dataframe(final_table, use_container_width=True)
-    
+    # Loop over every single selected player and show their dynamic spent allocation card
+    for index, row in res_df.iterrows():
+        st.info(f"⚽ **{row['position']}** | **{row['name']}** ({row['display_team']}) ➔ **Money Spent:** `${row['cost']}M` | *Form Score:* `{row['form_rating']}`")
+        
     st.markdown("---")
     
     opt_total = int(res_df['calculated_value'].sum() * 10)
