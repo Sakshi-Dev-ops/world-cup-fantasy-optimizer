@@ -35,7 +35,7 @@ fifa_2026_data = [
     {"id": 0, "name": "Lionel Messi", "position": "FWD", "team": "Argentina", "display_team": "🇦🇷 Argentina", "cost": 15, "form_rating": 9.4, "historical_points": 88},
     {"id": 1, "name": "Kylian Mbappe", "position": "FWD", "team": "France", "display_team": "🇫🇷 France", "cost": 15, "form_rating": 9.3, "historical_points": 86},
     {"id": 2, "name": "Erling Haaland", "position": "FWD", "team": "Norway", "display_team": "🇳🇴 Norway", "cost": 14, "form_rating": 9.2, "historical_points": 84},
-    {"id": 3, "name": "Jude Bellingham", "position": "MID", "team": "England", "display_team": "🏴󠁧󠁢󠁥󠁮󠁧󠁿 England", "cost": 13, "form_rating": 9.0, "historical_points": 78},
+    {"id": 3, "name": "Jude Bellingham", "position": "MID", "team": "England", "display_team": "🏴󠁧󠁢󠁥󠁮阱󠁿 England", "cost": 13, "form_rating": 9.0, "historical_points": 78},
     {"id": 4, "name": "Vinicius Junior", "position": "FWD", "team": "Brazil", "display_team": "🇧🇷 Brazil", "cost": 13, "form_rating": 8.9, "historical_points": 76},
     {"id": 5, "name": "Lamine Yamal", "position": "FWD", "team": "Spain", "display_team": "🇪🇸 Spain", "cost": 11, "form_rating": 9.1, "historical_points": 72},
     {"id": 6, "name": "Mohamed Salah", "position": "MID", "team": "Egypt", "display_team": "🇪🇬 Egypt", "cost": 12, "form_rating": 8.7, "historical_points": 75},
@@ -62,29 +62,16 @@ with st.expander("🗂️ View Complete Registered 2026 Player Pool Database", e
 
 # --- PURE PYTHON MULTI-CONSTRAINT OPTIMIZER ENGINE ---
 def python_knapsack_optimization(player_df, budget, r_def, r_mid, r_fwd):
-    items = player_df.to_dict('records')
-    n = len(items)
+    # Sort items based on value density to optimize choices
+    items = player_df.sort_values(by='calculated_value', ascending=False).to_dict('records')
     
-    dp = [[0.0] * (budget + 1) for _ in range(n + 1)]
-    
-    for i in range(1, n + 1):
-        cost = items[i-1]['cost']
-        val = items[i-1]['calculated_value']
-        for w in range(budget + 1):
-            if cost <= w:
-                dp[i][w] = max(dp[i-1][w], dp[i-1][w-cost] + val)
-            else:
-                dp[i][w] = dp[i-1][w]
-                
-    w = budget
     selected_ids = []
-    
     count_gk, count_def, count_mid, count_fwd = 0, 0, 0, 0
     team_counts = {}
+    w = budget
     
-    for i in range(n, 0, -1):
-        if dp[i][w] != dp[i-1][w]:
-            p = items[i-1]
+    for p in items:
+        if p['cost'] <= w:
             country = p['team']
             current_country_count = team_counts.get(country, 0)
             
@@ -132,13 +119,15 @@ if st.button("⚡ Execute Combinatorial Optimization"):
         st.markdown("---")
         
         st.subheader(f"🛡️ Target Roster Composition Grid ({formation})")
-        card_cols = st.columns(len(res_df))
+        
+        # FIXED: Use a stable, wrapping 4-column layout to render player cards perfectly
+        card_cols = st.columns(4)
         for index, (df_idx, row) in enumerate(res_df.iterrows()):
-            with card_cols[index]:
-                st.markdown(f"""
-                ### `{row['position']}`
-                **{row['name']}** {row['display_team']}  
-                `Cost: ${row['cost']}M`  
+            with card_cols[index % 4]:
+                st.info(f"""
+                **{row['position']}** - {row['name']}  
+                {row['display_team']}  
+                `Cost: ${row['cost']}M`
                 """)
         
         st.markdown("---")
@@ -160,4 +149,4 @@ if st.button("⚡ Execute Combinatorial Optimization"):
             })
             st.bar_chart(comparison_df, x="Roster Assembly Method", y="Cumulative Operational Efficiency")
     else:
-        st.error("⚠️ Mathematical optimization constraints cannot be reconciled under current parameters.")
+        st.error("⚠️ Mathematical optimization constraints cannot be reconciled under current parameters. Try raising your budget limit slider.")
