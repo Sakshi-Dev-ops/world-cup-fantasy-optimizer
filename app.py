@@ -7,7 +7,7 @@ st.set_page_config(page_title="World Cup 2026 Fantasy Optimizer", page_icon="⚽
 st.title("🏆 World Cup 2026 Fantasy Optimization Engine")
 st.subheader("Created By: Sakshi.M")
 st.markdown("### **Official 2026 FIFA World Cup Player Pool Edition**")
-st.markdown("Powered by a high-performance Knapsack Optimization backend algorithm.")
+st.markdown("Using high-performance Knapsack Optimization backend algorithm.")
 
 # --- SIDEBAR INTERFACE ---
 st.sidebar.header("Optimization Variables")
