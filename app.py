@@ -8,7 +8,6 @@ st.title("🏆 World Cup 2026 Fantasy Optimization Engine")
 st.subheader("👨‍💻 Created By: Sakshi.M")
 st.markdown("### **🗺️ Official 2026 FIFA World Cup Player Pool Edition**")
 
-# Context Narrative
 st.info("""
 ℹ️ **System Executive Summary:** This engine operates as an advanced multi-constraint dynamic programming framework. The analytical layer evaluates multi-dimensional knapsack matrices under strict positional budget limits and enforces a professional tournament constraint: restricting roster selection to a maximum of 3 active assets per individual national country federation.
 """)
@@ -62,27 +61,18 @@ fifa_2026_data = [
 
 df = pd.DataFrame(fifa_2026_data)
 
-# Table display mapping
-display_map = {
-    "name": "🏃 Player Name",
-    "position": "📐 Tactical Position",
-    "team": "🏳️ National Federation",
-    "cost": "💵 Market Cost ($M)",
-    "form_rating": "⚡ Current Form Rating",
-    "historical_points": "📈 Historical Points Yield"
-}
-df_display = df.rename(columns=display_map)
+# Safe naming system for display rendering
+df_display = df.copy()
+df_display.columns = ["id", "🏃 Player Name", "📐 Tactical Position", "🏳️ National Federation", "💵 Market Cost ($M)", "⚡ Current Form Rating", "📈 Historical Points Yield"]
 
 with st.expander("🗂️ View Complete Registered 2026 Player Pool Database", expanded=False):
     st.dataframe(df_display.drop(columns=["id"]), use_container_width=True)
 
 # --- PURE PYTHON MULTI-CONSTRAINT OPTIMIZER ENGINE ---
 def python_knapsack_optimization(player_df, budget, r_def, r_mid, r_fwd):
-    # Sort by performance value calculation to optimize backtracking priority
     items = player_df.to_dict('records')
     n = len(items)
     
-    # DP Matrix: dp[i][w] keeps track of optimal performance value yield
     dp = [[0.0] * (budget + 1) for _ in range(n + 1)]
     
     for i in range(1, n + 1):
@@ -94,28 +84,21 @@ def python_knapsack_optimization(player_df, budget, r_def, r_mid, r_fwd):
             else:
                 dp[i][w] = dp[i-1][w]
                 
-    # Backtrack while filtering rules
     w = budget
     selected_ids = []
     
-    count_gk = 0
-    count_def = 0
-    count_mid = 0
-    count_fwd = 0
-    
+    count_gk, count_def, count_mid, count_fwd = 0, 0, 0, 0
     team_counts = {}
     
     for i in range(n, 0, -1):
         if dp[i][w] != dp[i-1][w]:
             p = items[i-1]
-            
-            # 1. Enforce Country Limit (Max 3 players per country)
             country = p['team']
             current_country_count = team_counts.get(country, 0)
+            
             if current_country_count >= 3:
                 continue
                 
-            # 2. Enforce Position Constraints
             pos = p['position']
             validated = False
             
@@ -141,15 +124,13 @@ def python_knapsack_optimization(player_df, budget, r_def, r_mid, r_fwd):
 
 # --- EXECUTION INTERFACE TRIGGER ---
 if st.button("⚡ Execute Combinatorial Optimization"):
-    # Pre-compute objective vector mappings dynamically 
     df['calculated_value'] = (df['form_rating'] * w_form) + (df['historical_points'] * 0.1 * w_hist)
     
-    # Run the robust Python engine
     selected_ids = python_knapsack_optimization(df, budget_limit, req_def, req_mid, req_fwd)
     res_df = df[df['id'].isin(selected_ids)].copy()
     
     if not res_df.empty:
-        st.success(f"✅ Optimization Engine Complete: Verified Lineup Formed via High-Performance Python Engine.")
+        st.success("✅ Optimization Engine Complete: Verified Lineup Formed.")
         
         col1, col2, col3 = st.columns(3)
         col1.metric("🏃 Total Roster Assets", f"{len(res_df)} Players")
@@ -170,7 +151,6 @@ if st.button("⚡ Execute Combinatorial Optimization"):
         
         st.markdown("---")
         
-        # Analytics Visuals
         chart_col1, chart_col2 = st.columns(2)
         with chart_col1:
             st.subheader("📊 Capital Distribution Layout")
