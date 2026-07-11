@@ -3,7 +3,8 @@ import pandas as pd
 
 # --- PAGE SETUP ---
 st.set_page_config(page_title="World Cup Fantasy Optimizer", page_icon="⚽", layout="wide")
-st.title("🏆 World Cup V7 Fantasy Optimization Engine - Created by: Sakshi.Mehta")
+st.title("🏆 World Cup V7 Fantasy Optimization Engine")
+st.subheader("Created By: Sakshi.M")
 st.markdown("Powered by a high-performance Knapsack Optimization backend algorithm.")
 
 # --- SIDEBAR INTERFACE ---
