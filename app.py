@@ -18,7 +18,6 @@ st.markdown("---")
 st.sidebar.header("⚙️ Optimization Parameters")
 budget_limit = st.sidebar.slider("💰 Total Team Budget ($M)", min_value=40, max_value=150, value=100)
 
-# Hardcoded directly to the stable 4-3-3 matrix format
 formation = "4-3-3"
 st.sidebar.success(f"📋 Locked Tactical Matrix: **{formation}**")
 
@@ -26,10 +25,9 @@ req_def = 4
 req_mid = 3
 req_fwd = 3
 
-# Weights permanently locked to Form optimization
 w_form, w_hist = 0.85, 0.15
 
-# --- PLAYER POOL DATA INTERFACES WITH SAFE CODE STRINGS ---
+# --- PLAYER POOL DATA ---
 fifa_2026_data = [
     {"id": 0, "name": "Lionel Messi", "position": "FWD", "team": "Argentina", "display_team": "🇦🇷 Argentina", "cost": 15, "form_rating": 9.4, "historical_points": 88},
     {"id": 1, "name": "Kylian Mbappe", "position": "FWD", "team": "France", "display_team": "🇫🇷 France", "cost": 15, "form_rating": 9.3, "historical_points": 86},
@@ -51,7 +49,6 @@ fifa_2026_data = [
 
 df = pd.DataFrame(fifa_2026_data)
 
-# Safe presentation layer conversion
 df_display = df.copy().drop(columns=["id", "team"])
 df_display = df_display[["name", "position", "display_team", "cost", "form_rating", "historical_points"]]
 df_display.columns = ["🏃 Player Name", "📐 Tactical Position", "🏳️ National Federation", "💵 Market Cost ($M)", "⚡ Current Form Rating", "📈 Historical Points Yield"]
@@ -118,14 +115,9 @@ if st.button("⚡ Execute Combinatorial Optimization"):
         
         st.subheader(f"🛡️ Target Roster Composition Grid ({formation})")
         
-        card_cols = st.columns(4)
-        for index, (df_idx, row) in enumerate(res_df.iterrows()):
-            with card_cols[index % 4]:
-                st.info(f"""
-                **{row['position']}** - {row['name']}  
-                {row['display_team']}  
-                `Cost: ${row['cost']}M`
-                """)
+        # Crash-proof display loop
+        for index, row in res_df.iterrows():
+            st.info(f"**{row['position']}** — {row['name']} | {row['display_team']} | `Cost: ${row['cost']}M`")
         
         st.markdown("---")
         
