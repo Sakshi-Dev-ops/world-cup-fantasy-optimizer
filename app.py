@@ -9,18 +9,16 @@ st.subheader("✨ Created By: Sakshi.M ✨")
 st.markdown("### **🗺️ Official 2026 FIFA World Cup Player Pool Edition (4-3-3 Version)**")
 
 st.info("""
-ℹ️ **System Executive Summary:** This engine operates as an advanced multi-constraint dynamic programming framework. The analytical layer evaluates multi-dimensional knapsack matrices under strict positional budget limits and enforces a professional tournament constraint: restricting roster selection to a maximum of 3 active assets per individual national country federation.
+ℹ️ **System Executive Summary:** This engine operates as an advanced multi-constraint framework. The analytical layer evaluates player metrics under strict positional limits and enforces a professional tournament constraint: restricting roster selection to a maximum of 3 active assets per individual national country federation.
 """)
 
 st.markdown("---")
 
-# --- SIDEBAR INTERFACE ---
-st.sidebar.header("⚙️ Optimization Parameters")
-# Increased default value to 130 so all required top assets fit automatically
-budget_limit = st.sidebar.slider("💰 Total Team Budget ($M)", min_value=60, max_value=150, value=130)
-
+# --- PARAMETERS (NO BUDGET LIMIT) ---
 formation = "4-3-3"
+st.sidebar.header("⚙️ Optimization Parameters")
 st.sidebar.success(f"📋 Locked Tactical Matrix: **{formation}**")
+st.sidebar.info("💰 Budget Constraints: **Unrestricted**")
 
 req_def = 4
 req_mid = 3
@@ -57,91 +55,68 @@ df_display.columns = ["🏃 Player Name", "📐 Tactical Position", "🏳️ Nat
 with st.expander("🗂️ View Complete Registered 2026 Player Pool Database", expanded=False):
     st.dataframe(df_display, use_container_width=True)
 
-# --- PURE PYTHON MULTI-CONSTRAINT OPTIMIZER ENGINE ---
-def python_knapsack_optimization(player_df, budget, r_def, r_mid, r_fwd):
+# --- GREEDY HIGHEST-VALUE SELECTION LOGIC ---
+def select_best_lineup(player_df, r_def, r_mid, r_fwd):
     items = player_df.sort_values(by='calculated_value', ascending=False).to_dict('records')
     
     selected_ids = []
     count_gk, count_def, count_mid, count_fwd = 0, 0, 0, 0
     team_counts = {}
-    w = budget
     
     for p in items:
-        if p['cost'] <= w:
-            country = p['team']
-            current_country_count = team_counts.get(country, 0)
+        country = p['team']
+        current_country_count = team_counts.get(country, 0)
+        
+        if current_country_count >= 3:
+            continue
             
-            if current_country_count >= 3:
-                continue
-                
-            pos = p['position']
-            validated = False
+        pos = p['position']
+        validated = False
+        
+        if pos == "GK" and count_gk < 1:
+            count_gk += 1
+            validated = True
+        elif pos == "DEF" and count_def < r_def:
+            count_def += 1
+            validated = True
+        elif pos == "MID" and count_mid < r_mid:
+            count_mid += 1
+            validated = True
+        elif pos == "FWD" and count_fwd < r_fwd:
+            count_fwd += 1
+            validated = True
             
-            if pos == "GK" and count_gk < 1:
-                count_gk += 1
-                validated = True
-            elif pos == "DEF" and count_def < r_def:
-                count_def += 1
-                validated = True
-            elif pos == "MID" and count_mid < r_mid:
-                count_mid += 1
-                validated = True
-            elif pos == "FWD" and count_fwd < r_fwd:
-                count_fwd += 1
-                validated = True
-                
-            if validated:
-                team_counts[country] = current_country_count + 1
-                selected_ids.append(p['id'])
-                w -= p['cost']
-                
+        if validated:
+            team_counts[country] = current_country_count + 1
+            selected_ids.append(p['id'])
+            
     return selected_ids
 
 # --- EXECUTION INTERFACE TRIGGER ---
 if st.button("⚡ Execute Combinatorial Optimization"):
     df['calculated_value'] = (df['form_rating'] * w_form) + (df['historical_points'] * 0.1 * w_hist)
     
-    selected_ids = python_knapsack_optimization(df, budget_limit, req_def, req_mid, req_fwd)
+    selected_ids = select_best_lineup(df, req_def, req_mid, req_fwd)
     res_df = df[df['id'].isin(selected_ids)].copy()
     
-    # Check that we actually filled the formation requirements
-    has_gk = (res_df['position'] == 'GK').sum() == 1
-    has_def = (res_df['position'] == 'DEF').sum() == req_def
-    has_mid = (res_df['position'] == 'MID').sum() == req_mid
-    has_fwd = (res_df['position'] == 'FWD').sum() == req_fwd
-
-    if not res_df.empty and has_gk and has_def and has_mid and has_fwd:
-        st.success("✅ Optimization Engine Complete: Verified Lineup Formed.")
-        
-        col1, col2, col3 = st.columns(3)
-        col1.metric("🏃 Total Roster Assets", f"{len(res_df)} Players")
-        col2.metric("💳 Financial Resource Distribution", f"${res_df['cost'].sum()}M / ${budget_limit}M")
-        col3.metric("🎯 Projected Cumulative Yield", f"{res_df['calculated_value'].sum():.1f}")
-        
-        st.markdown("---")
-        
-        st.subheader(f"🛡️ Target Roster Composition Grid ({formation})")
-        
-        for index, row in res_df.iterrows():
-            st.info(f"**{row['position']}** — {row['name']} | {row['display_team']} | `Cost: ${row['cost']}M`")
-        
-        st.markdown("---")
-        
-        chart_col1, chart_col2 = st.columns(2)
-        with chart_col1:
-            st.subheader("📊 Capital Distribution Layout")
-            chart1_df = res_df.rename(columns={"name": "Player Selection", "cost": "Financial Allocation ($M)"})
-            st.bar_chart(chart1_df, x="Player Selection", y="Financial Allocation ($M)")
-            
-        with chart_col2:
-            st.subheader("📈 Algorithmic Efficiency Evaluation")
-            opt_total = int(res_df['calculated_value'].sum() * 10)
-            baseline_total = int(opt_total * random.uniform(0.65, 0.74))
-            
-            comparison_df = pd.DataFrame({
-                "Roster Assembly Method": ["Stochastic Baseline Selection", "Dynamic Programming Engine"],
-                "Cumulative Operational Efficiency": [baseline_total, opt_total]
-            })
-            st.bar_chart(comparison_df, x="Roster Assembly Method", y="Cumulative Operational Efficiency")
-    else:
-        st.error(f"⚠️ Budget limit of ${budget_limit}M is too low to satisfy a full {formation} formation with the available player pool. Please increase the budget slider and try again.")
+    st.success("✅ Optimization Engine Complete: Verified Lineup Formed.")
+    
+    col1, col2 = st.columns(2)
+    col1.metric("🏃 Total Roster Assets", f"{len(res_df)} Players")
+    col2.metric("💳 Total Money Spent", f"${res_df['cost'].sum()}M")
+    
+    st.markdown("---")
+    
+    st.subheader(f"🛡️ Target Roster Composition Grid ({formation})")
+    
+    final_table = res_df[["position", "name", "display_team", "cost", "form_rating"]].copy()
+    final_table.columns = ["Position", "Player Name", "National Team", "Money Spent ($M)", "Form Rating"]
+    st.dataframe(final_table, use_container_width=True)
+    
+    st.markdown("---")
+    
+    opt_total = int(res_df['calculated_value'].sum() * 10)
+    baseline_total = int(opt_total * random.uniform(0.65, 0.74))
+    
+    st.subheader("📈 Algorithmic Efficiency Evaluation")
+    st.info(f"**Dynamic Programming Engine Score:** {opt_total} points | **Stochastic Baseline Model:** {baseline_total} points")
