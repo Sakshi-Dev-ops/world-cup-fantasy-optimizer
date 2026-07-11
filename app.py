@@ -8,18 +8,16 @@ import subprocess
 # --- PAGE SETUP ---
 st.set_page_config(page_title="World Cup 2026 Fantasy Optimizer", page_icon="⚽", layout="wide")
 st.title("🏆 World Cup 2026 Fantasy Optimization Engine")
-st.subheader("Created By: Sakshi.M")
-st.markdown("### **Official 2026 FIFA World Cup Player Pool Edition**")
+st.subheader("👨‍💻 Created By: Sakshi.M")
+st.markdown("### **🗺️ Official 2026 FIFA World Cup Player Pool Edition**")
 
 # --- AUTOMATED NATIVE SYSTEM COMPILATION ---
-# This forces the host server to compile your optimizer.cpp file automatically if the library is missing
 if not os.path.exists("liboptimizer.so") and not os.path.exists("liboptimizer.dll"):
     try:
-        # If running on a Unix/Linux-based container (like Streamlit Cloud)
         if os.name != 'nt': 
             subprocess.run(["g++", "-O3", "-shared", "-fPIC", "-o", "liboptimizer.so", "optimizer.cpp"], check=True)
     except Exception as e:
-        st.error(f"Automated backend system compilation failed: {e}")
+        st.error(f"❌ Automated backend system compilation failed: {e}")
 
 # Context Narrative
 st.info("""
@@ -54,11 +52,11 @@ if backend_lib is None:
     st.warning("⚠️ Native high-performance binaries (.so/.dll) missing. Please ensure optimizer.cpp is in your repository.")
 
 # --- SIDEBAR INTERFACE ---
-st.sidebar.header("Optimization Parameters")
-budget_limit = st.sidebar.slider("Total Team Budget ($M)", min_value=40, max_value=150, value=100)
+st.sidebar.header("⚙️ Optimization Parameters")
+budget_limit = st.sidebar.slider("💰 Total Team Budget ($M)", min_value=40, max_value=150, value=100)
 
 formation = st.sidebar.selectbox(
-    "Select Tactical Formation Matrix",
+    "📋 Select Tactical Formation Matrix",
     ["4-3-3", "4-4-2", "3-5-2", "5-3-2"]
 )
 
@@ -67,10 +65,10 @@ req_mid = int(formation.split("-")[1])
 req_fwd = int(formation.split("-")[2])
 
 st.sidebar.markdown("---")
-st.sidebar.subheader("Strategic Profile Weights")
+st.sidebar.subheader("🎯 Strategic Profile Weights")
 strategy_profile = st.sidebar.radio(
-    "Select Objective Vector",
-    ["Aggressive Growth Profile (Form Weight: 85%)", "Historical Safety Profile (History Weight: 85%)"]
+    "📊 Select Objective Vector",
+    ["🔥 Aggressive Growth Profile (Form Weight: 85%)", "🛡️ Historical Safety Profile (History Weight: 85%)"]
 )
 
 if "Aggressive" in strategy_profile:
@@ -78,46 +76,46 @@ if "Aggressive" in strategy_profile:
 else:
     w_form, w_hist = 0.15, 0.85
 
-# --- PLAYER POOL DATA INTERFACES ---
+# --- PLAYER POOL DATA INTERFACES WITH FLAG EMOJIS RESTORED ---
 fifa_2026_data = [
-    {"id": 0, "name": "Lionel Messi", "position": "FWD", "team": "Argentina", "cost": 15, "form_rating": 9.4, "historical_points": 88},
-    {"id": 1, "name": "Kylian Mbappe", "position": "FWD", "team": "France", "cost": 15, "form_rating": 9.3, "historical_points": 86},
-    {"id": 2, "name": "Erling Haaland", "position": "FWD", "team": "Norway", "cost": 14, "form_rating": 9.2, "historical_points": 84},
-    {"id": 3, "name": "Jude Bellingham", "position": "MID", "team": "England", "cost": 13, "form_rating": 9.0, "historical_points": 78},
-    {"id": 4, "name": "Vinicius Junior", "position": "FWD", "team": "Brazil", "cost": 13, "form_rating": 8.9, "historical_points": 76},
-    {"id": 5, "name": "Lamine Yamal", "position": "FWD", "team": "Spain", "cost": 11, "form_rating": 9.1, "historical_points": 72},
-    {"id": 6, "name": "Mohamed Salah", "position": "MID", "team": "Egypt", "cost": 12, "form_rating": 8.7, "historical_points": 75},
-    {"id": 7, "name": "Kevin De Bruyne", "position": "MID", "team": "Belgium", "cost": 11, "form_rating": 8.4, "historical_points": 70},
-    {"id": 8, "name": "Florian Wirtz", "position": "MID", "team": "Germany", "cost": 11, "form_rating": 8.8, "historical_points": 73},
-    {"id": 9, "name": "Christian Pulisic", "position": "MID", "team": "USA", "cost": 9, "form_rating": 8.3, "historical_points": 65},
-    {"id": 10, "name": "Alphonso Davies", "position": "DEF", "team": "Canada", "cost": 9, "form_rating": 8.2, "historical_points": 62},
-    {"id": 11, "name": "Virgil van Dijk", "position": "DEF", "team": "Netherlands", "cost": 9, "form_rating": 8.0, "historical_points": 58},
-    {"id": 12, "name": "William Saliba", "position": "DEF", "team": "France", "cost": 9, "form_rating": 8.5, "historical_points": 64},
-    {"id": 13, "name": "Achraf Hakimi", "position": "DEF", "team": "Morocco", "cost": 8, "form_rating": 8.1, "historical_points": 60},
-    {"id": 14, "name": "Cristiano Ronaldo", "position": "FWD", "team": "Portugal", "cost": 10, "form_rating": 8.5, "historical_points": 68},
-    {"id": 15, "name": "Alisson Becker", "position": "GK", "team": "Brazil", "cost": 8, "form_rating": 8.2, "historical_points": 61}
+    {"id": 0, "name": "Lionel Messi", "position": "FWD", "team": "🇦🇷 Argentina", "cost": 15, "form_rating": 9.4, "historical_points": 88},
+    {"id": 1, "name": "Kylian Mbappe", "position": "FWD", "team": "🇫🇷 France", "cost": 15, "form_rating": 9.3, "historical_points": 86},
+    {"id": 2, "name": "Erling Haaland", "position": "FWD", "team": "🇳🇴 Norway", "cost": 14, "form_rating": 9.2, "historical_points": 84},
+    {"id": 3, "name": "Jude Bellingham", "position": "MID", "team": "🏴󠁧󠁢󠁥󠁮󠁧󠁿 England", "cost": 13, "form_rating": 9.0, "historical_points": 78},
+    {"id": 4, "name": "Vinicius Junior", "position": "FWD", "team": "🇧🇷 Brazil", "cost": 13, "form_rating": 8.9, "historical_points": 76},
+    {"id": 5, "name": "Lamine Yamal", "position": "FWD", "team": "🇪🇸 Spain", "cost": 11, "form_rating": 9.1, "historical_points": 72},
+    {"id": 6, "name": "Mohamed Salah", "position": "MID", "team": "🇪🇬 Egypt", "cost": 12, "form_rating": 8.7, "historical_points": 75},
+    {"id": 7, "name": "Kevin De Bruyne", "position": "MID", "team": "🇧🇪 Belgium", "cost": 11, "form_rating": 8.4, "historical_points": 70},
+    {"id": 8, "name": "Florian Wirtz", "position": "MID", "team": "🇩🇪 Germany", "cost": 11, "form_rating": 8.8, "historical_points": 73},
+    {"id": 9, "name": "Christian Pulisic", "position": "MID", "team": "🇺🇸 USA", "cost": 9, "form_rating": 8.3, "historical_points": 65},
+    {"id": 10, "name": "Alphonso Davies", "position": "DEF", "team": "🇨🇦 Canada", "cost": 9, "form_rating": 8.2, "historical_points": 62},
+    {"id": 11, "name": "Virgil van Dijk", "position": "DEF", "team": "🇳🇱 Netherlands", "cost": 9, "form_rating": 8.0, "historical_points": 58},
+    {"id": 12, "name": "William Saliba", "position": "DEF", "team": "🇫🇷 France", "cost": 9, "form_rating": 8.5, "historical_points": 64},
+    {"id": 13, "name": "Achraf Hakimi", "position": "DEF", "team": "🇲🇦 Morocco", "cost": 8, "form_rating": 8.1, "historical_points": 60},
+    {"id": 14, "name": "Cristiano Ronaldo", "position": "FWD", "team": "🇵🇹 Portugal", "cost": 10, "form_rating": 8.5, "historical_points": 68},
+    {"id": 15, "name": "Alisson Becker", "position": "GK", "team": "🇧🇷 Brazil", "cost": 8, "form_rating": 8.2, "historical_points": 61}
 ]
 
 df = pd.DataFrame(fifa_2026_data)
 
-# FIXES THE MESSY TABLE TITLES FROM YOUR SCREENSHOT
+# Table display map overrides
 display_map = {
-    "name": "Player Name",
-    "position": "Tactical Position",
-    "team": "National Federation",
-    "cost": "Market Cost ($M)",
-    "form_rating": "Current Form Rating",
-    "historical_points": "Historical Points Yield"
+    "name": "🏃 Player Name",
+    "position": "📐 Tactical Position",
+    "team": "🏳️ National Federation",
+    "cost": "💵 Market Cost ($M)",
+    "form_rating": "⚡ Current Form Rating",
+    "historical_points": "📈 Historical Points Yield"
 }
 df_display = df.rename(columns=display_map)
 
-with st.expander("📊 View Complete Registered 2026 Player Pool Database", expanded=False):
+with st.expander("🗂️ View Complete Registered 2026 Player Pool Database", expanded=False):
     st.dataframe(df_display.drop(columns=["id"]), use_container_width=True)
 
 # --- EXECUTION INTERFACE TRIGGER ---
-if st.button("🚀 Execute Combinatorial Optimization"):
+if st.button("⚡ Execute Combinatorial Optimization"):
     if backend_lib is None:
-        st.error("Execution halted. Native math binary engine interface unlinked.")
+        st.error("❌ Execution halted. Native math binary engine interface unlinked.")
     else:
         df['calculated_value'] = (df['form_rating'] * w_form) + (df['historical_points'] * 0.1 * w_hist)
         df_sorted = df.sort_values(by='calculated_value', ascending=False)
@@ -148,12 +146,12 @@ if st.button("🚀 Execute Combinatorial Optimization"):
         res_df = df[df['id'].isin(selected_ids)].copy()
         
         if not res_df.empty:
-            st.success(f"✨ Optimization Engine Complete: Verified Lineup Formed via Native C++ Execution Engine.")
+            st.success(f"✅ Optimization Engine Complete: Verified Lineup Formed via Native C++ Execution Engine.")
             
             col1, col2, col3 = st.columns(3)
-            col1.metric("Total Roster Assets", f"{len(res_df)} Players")
-            col2.metric("Financial Resource Distribution", f"${res_df['cost'].sum()}M / ${budget_limit}M")
-            col3.metric("Projected Cumulative Yield", f"{res_df['calculated_value'].sum():.1f}")
+            col1.metric("🏃 Total Roster Assets", f"{len(res_df)} Players")
+            col2.metric("💳 Financial Resource Distribution", f"${res_df['cost'].sum()}M / ${budget_limit}M")
+            col3.metric("🎯 Projected Cumulative Yield", f"{res_df['calculated_value'].sum():.1f}")
             
             st.markdown("---")
             
@@ -163,13 +161,13 @@ if st.button("🚀 Execute Combinatorial Optimization"):
                 with card_cols[index]:
                     st.markdown(f"""
                     ### `{row['position']}`
-                    **{row['name']}** `{row['team']}`  
+                    **{row['name']}** {row['team']}  
                     `Cost: ${row['cost']}M`  
                     """)
             
             st.markdown("---")
             
-            # Analytics Visuals (FIXED CHART LABELS)
+            # Analytics Visuals
             chart_col1, chart_col2 = st.columns(2)
             with chart_col1:
                 st.subheader("📊 Capital Distribution Layout")
@@ -187,4 +185,4 @@ if st.button("🚀 Execute Combinatorial Optimization"):
                 })
                 st.bar_chart(comparison_df, x="Roster Assembly Method", y="Cumulative Operational Efficiency")
         else:
-            st.error("Mathematical optimization constraints cannot be reconciled under current parameters.")
+            st.error("⚠️ Mathematical optimization constraints cannot be reconciled under current parameters.")
