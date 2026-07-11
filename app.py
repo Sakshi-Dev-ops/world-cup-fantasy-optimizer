@@ -27,17 +27,8 @@ req_def = int(formation.split("-")[0])
 req_mid = int(formation.split("-")[1])
 req_fwd = int(formation.split("-")[2])
 
-st.sidebar.markdown("---")
-st.sidebar.subheader("🎯 Strategic Profile Weights")
-strategy_profile = st.sidebar.radio(
-    "📊 Select Objective Vector",
-    ["🔥 Aggressive Growth Profile (Form Weight: 85%)", "🛡️ Historical Safety Profile (History Weight: 85%)"]
-)
-
-if "Aggressive" in strategy_profile:
-    w_form, w_hist = 0.85, 0.15
-else:
-    w_form, w_hist = 0.15, 0.85
+# Performance objective matrix weights permanently locked to Form optimization
+w_form, w_hist = 0.85, 0.15
 
 # --- PLAYER POOL DATA INTERFACES WITH SAFE CODE STRINGS ---
 fifa_2026_data = [
@@ -135,38 +126,4 @@ if st.button("⚡ Execute Combinatorial Optimization"):
         
         col1, col2, col3 = st.columns(3)
         col1.metric("🏃 Total Roster Assets", f"{len(res_df)} Players")
-        col2.metric("💳 Financial Resource Distribution", f"${res_df['cost'].sum()}M / ${budget_limit}M")
-        col3.metric("🎯 Projected Cumulative Yield", f"{res_df['calculated_value'].sum():.1f}")
-        
-        st.markdown("---")
-        
-        st.subheader(f"🛡️ Target Roster Composition Grid ({formation})")
-        card_cols = st.columns(len(res_df))
-        for index, (df_idx, row) in enumerate(res_df.iterrows()):
-            with card_cols[index]:
-                st.markdown(f"""
-                ### `{row['position']}`
-                **{row['name']}** {row['display_team']}  
-                `Cost: ${row['cost']}M`  
-                """)
-        
-        st.markdown("---")
-        
-        chart_col1, chart_col2 = st.columns(2)
-        with chart_col1:
-            st.subheader("📊 Capital Distribution Layout")
-            chart1_df = res_df.rename(columns={"name": "Player Selection", "cost": "Financial Allocation ($M)"})
-            st.bar_chart(chart1_df, x="Player Selection", y="Financial Allocation ($M)")
-            
-        with chart_col2:
-            st.subheader("📈 Algorithmic Efficiency Evaluation")
-            opt_total = int(res_df['calculated_value'].sum() * 10)
-            baseline_total = int(opt_total * random.uniform(0.65, 0.74))
-            
-            comparison_df = pd.DataFrame({
-                "Roster Assembly Method": ["Stochastic Baseline Selection", "Dynamic Programming Engine"],
-                "Cumulative Operational Efficiency": [baseline_total, opt_total]
-            })
-            st.bar_chart(comparison_df, x="Roster Assembly Method", y="Cumulative Operational Efficiency")
-    else:
-        st.error("⚠️ Mathematical optimization constraints cannot be reconciled under current parameters.")
+        col2.metric("💳 Financial Resource Distribution", f"${res_df['cost'].sum
