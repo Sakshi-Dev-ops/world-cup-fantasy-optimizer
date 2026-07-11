@@ -33,7 +33,7 @@ class CPlayer(ctypes.Structure):
         ("cost", ctypes.c_int),
         ("performance_value", ctypes.c_double),
         ("position", ctypes.c_char * 8),
-        ("team", ctypes.c_char * 32)
+        ("team", ctypes.c_char * 64) # Fixed: Expanded to 64 bytes to prevent struct buffer overflow mismatches
     ]
 
 def get_optimization_backend():
@@ -76,7 +76,7 @@ if "Aggressive" in strategy_profile:
 else:
     w_form, w_hist = 0.15, 0.85
 
-# --- PLAYER POOL DATA INTERFACES WITH FLAG EMOJIS RESTORED ---
+# --- PLAYER POOL DATA INTERFACES WITH FLAG EMOJIS ---
 fifa_2026_data = [
     {"id": 0, "name": "Lionel Messi", "position": "FWD", "team": "🇦🇷 Argentina", "cost": 15, "form_rating": 9.4, "historical_points": 88},
     {"id": 1, "name": "Kylian Mbappe", "position": "FWD", "team": "🇫🇷 France", "cost": 15, "form_rating": 9.3, "historical_points": 86},
@@ -98,7 +98,6 @@ fifa_2026_data = [
 
 df = pd.DataFrame(fifa_2026_data)
 
-# Table display map overrides
 display_map = {
     "name": "🏃 Player Name",
     "position": "📐 Tactical Position",
