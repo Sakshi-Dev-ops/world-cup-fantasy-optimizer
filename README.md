@@ -31,9 +31,6 @@ This engine evaluates multi-dimensional player profiles against rigorous profess
 
 ---
 
-## 🏁 Getting Started & Local Deployment
+## 🏁 Link to the Streamlit App
 
-### 1. Clone the Repository
-```bash
-git clone [https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git](https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git)
-cd YOUR_REPO_NAME
+### https://world-cup-fantasy-optimizer-as3hweyjrkb7f26ynsucim.streamlit.app/
