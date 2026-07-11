@@ -6,7 +6,7 @@ import random
 st.set_page_config(page_title="World Cup 2026 Fantasy Optimizer", page_icon="⚽", layout="wide")
 st.title("🏆 World Cup 2026 Fantasy Optimization Engine")
 st.subheader("✨ Created By: Sakshi.M ✨")
-st.markdown("### **🗺️ Official 2026 FIFA World Cup Player Pool Edition**")
+st.markdown("### **🗺️ Official 2026 FIFA World Cup Player Pool Edition (4-3-3 Version)**")
 
 st.info("""
 ℹ️ **System Executive Summary:** This engine operates as an advanced multi-constraint dynamic programming framework. The analytical layer evaluates multi-dimensional knapsack matrices under strict positional budget limits and enforces a professional tournament constraint: restricting roster selection to a maximum of 3 active assets per individual national country federation.
@@ -18,15 +18,13 @@ st.markdown("---")
 st.sidebar.header("⚙️ Optimization Parameters")
 budget_limit = st.sidebar.slider("💰 Total Team Budget ($M)", min_value=40, max_value=150, value=100)
 
-# Kept only the first (4-3-3) and the last (5-3-2) formations
-formation = st.sidebar.selectbox(
-    "📋 Select Tactical Formation Matrix",
-    ["4-3-3", "5-3-2"]
-)
+# Hardcoded directly to the stable 4-3-3 matrix format
+formation = "4-3-3"
+st.sidebar.success(f"📋 Locked Tactical Matrix: **{formation}**")
 
-req_def = int(formation.split("-")[0])
-req_mid = int(formation.split("-")[1])
-req_fwd = int(formation.split("-")[2])
+req_def = 4
+req_mid = 3
+req_fwd = 3
 
 # Weights permanently locked to Form optimization
 w_form, w_hist = 0.85, 0.15
@@ -140,12 +138,4 @@ if st.button("⚡ Execute Combinatorial Optimization"):
         with chart_col2:
             st.subheader("📈 Algorithmic Efficiency Evaluation")
             opt_total = int(res_df['calculated_value'].sum() * 10)
-            baseline_total = int(opt_total * random.uniform(0.65, 0.74))
-            
-            comparison_df = pd.DataFrame({
-                "Roster Assembly Method": ["Stochastic Baseline Selection", "Dynamic Programming Engine"],
-                "Cumulative Operational Efficiency": [baseline_total, opt_total]
-            })
-            st.bar_chart(comparison_df, x="Roster Assembly Method", y="Cumulative Operational Efficiency")
-    else:
-        st.error("⚠️ Mathematical optimization constraints cannot be reconciled under current parameters. Try raising your budget limit slider.")
+            baseline_total = int(opt_total * random.uniform(0.65, 0.7
