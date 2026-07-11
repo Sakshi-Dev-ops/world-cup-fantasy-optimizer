@@ -4,42 +4,35 @@
 #include <algorithm>
 #include <cstring>
 
-// Structure to hold player data incoming from Python
+// Standard C-interface structure for cross-language data streaming via FFI
 struct Player {
-    char name[50];
-    char position[20];
-    char team[30];
+    int id;
     int cost;
-    double form_rating; 
-    int historical_points;
+    double performance_value;
+    char position[8];
+    char team[32];
 };
 
-// Global vector to hold results back to Python
-std::vector<Player> optimal_lineup;
-
 extern "C" {
-    // 1. Predictive Engine: Analyzes form and history to project match-day points
-    double calculate_predicted_points(double form, int history) {
-        return (form * 0.7) + (static_cast<double>(history) * 0.3);
-    }
+    // Exported symbol for Python ctypes mapping
+    int execute_knapsack_optimization(
+        Player* players, 
+        int total_players, 
+        int budget_limit, 
+        int req_def, 
+        int req_mid, 
+        int req_fwd, 
+        int* output_indices
+    ) {
+        // Multi-dimensional dynamic programming allocation tables
+        // Time Complexity: O(N * W), Space Complexity: O(N * W)
+        std::vector<std::vector<double>> dp(total_players + 1, std::vector<double>(budget_limit + 1, 0.0));
 
-    // 2. Optimization Engine: Multi-constraint 0/1 Knapsack
-    void optimize_lineup(Player* players, int count, int max_budget, int max_per_team) {
-        optimal_lineup.clear();
-        
-        std::vector<double> predicted_values(count);
-        for(int i = 0; i < count; ++i) {
-            predicted_values[i] = calculate_predicted_points(players[i].form_rating, players[i].historical_points);
-        }
-
-        // DP Table
-        std::vector<std::vector<double>> dp(count + 1, std::vector<double>(max_budget + 1, 0.0));
-
-        for (int i = 1; i <= count; ++i) {
+        for (int i = 1; i <= total_players; ++i) {
             int current_cost = players[i - 1].cost;
-            double current_val = predicted_values[i - 1];
+            double current_val = players[i - 1].performance_value;
 
-            for (int w = 0; w <= max_budget; ++w) {
+            for (int w = 0; w <= budget_limit; ++w) {
                 if (current_cost <= w) {
                     dp[i][w] = std::max(dp[i - 1][w], dp[i - 1][w - current_cost] + current_val);
                 } else {
@@ -48,29 +41,60 @@ extern "C" {
             }
         }
 
-        // Backtracking
-        int w = max_budget;
-        for (int i = count; i > 0 && w > 0; --i) {
+        // Backtracking state machine checking positional constraints & federation caps
+        int w = budget_limit;
+        int chosen_count = 0;
+        
+        int count_gk = 0, count_def = 0, count_mid = 0, count_fwd = 0;
+        
+        // Federation tracking array map (Enforces Max 3 players from any single country)
+        char team_registry[50][32];
+        int team_counts[50] = {0};
+        int unique_teams = 0;
+
+        for (int i = total_players; i > 0; --i) {
             if (dp[i][w] != dp[i - 1][w]) {
-                optimal_lineup.push_back(players[i - 1]);
-                w -= players[i - 1].cost;
+                Player p = players[i - 1];
+                
+                // Track nation distribution limit
+                int team_idx = -1;
+                for (int t = 0; t < unique_teams; ++t) {
+                    if (std::strcmp(team_registry[t], p.team) == 0) {
+                        team_idx = t;
+                        break;
+                    }
+                }
+                if (team_idx == -1) {
+                    std::strcpy(team_registry[unique_teams], p.team);
+                    team_idx = unique_teams;
+                    unique_teams++;
+                }
+
+                if (team_counts[team_idx] >= 3) {
+                    continue; // Skip asset if national boundary conditions are violated
+                }
+
+                // Positional cell filtering logic
+                bool asset_validated = false;
+                std::string pos(p.position);
+
+                if (pos == "GK" && count_gk < 1) {
+                    count_gk++; asset_validated = true;
+                } else if (pos == "DEF" && count_def < req_def) {
+                    count_def++; asset_validated = true;
+                } else if (pos == "MID" && count_mid < req_mid) {
+                    count_mid++; asset_validated = true;
+                } else if (pos == "FWD" && count_fwd < req_fwd) {
+                    count_fwd++; asset_validated = true;
+                }
+
+                if (asset_validated) {
+                    team_counts[team_idx]++;
+                    output_indices[chosen_count++] = p.id;
+                    w -= p.cost;
+                }
             }
         }
-    }
-
-    // Helpers for Python to grab data
-    int get_optimal_count() {
-        return optimal_lineup.size();
-    }
-
-    void get_optimal_player(int index, Player* out_player) {
-        if (index >= 0 && index < static_cast<int>(optimal_lineup.size())) {
-            std::strcpy(out_player->name, optimal_lineup[index].name);
-            std::strcpy(out_player->position, optimal_lineup[index].position);
-            std::strcpy(out_player->team, optimal_lineup[index].team);
-            out_player->cost = optimal_lineup[index].cost;
-            out_player->form_rating = optimal_lineup[index].form_rating;
-            out_player->historical_points = optimal_lineup[index].historical_points;
-        }
+        return chosen_count;
     }
 }
