@@ -3,6 +3,7 @@ import pandas as pd
 import random
 import ctypes
 import os
+import subprocess
 
 # --- PAGE SETUP ---
 st.set_page_config(page_title="World Cup 2026 Fantasy Optimizer", page_icon="⚽", layout="wide")
@@ -10,6 +11,17 @@ st.title("🏆 World Cup 2026 Fantasy Optimization Engine")
 st.subheader("Created By: Sakshi.M")
 st.markdown("### **Official 2026 FIFA World Cup Player Pool Edition**")
 
+# --- AUTOMATED NATIVE SYSTEM COMPILATION ---
+# This forces the host server to compile your optimizer.cpp file automatically if the library is missing
+if not os.path.exists("liboptimizer.so") and not os.path.exists("liboptimizer.dll"):
+    try:
+        # If running on a Unix/Linux-based container (like Streamlit Cloud)
+        if os.name != 'nt': 
+            subprocess.run(["g++", "-O3", "-shared", "-fPIC", "-o", "liboptimizer.so", "optimizer.cpp"], check=True)
+    except Exception as e:
+        st.error(f"Automated backend system compilation failed: {e}")
+
+# Context Narrative
 st.info("""
 ℹ️ **System Executive Summary:** This engine operates as a hybrid decoupled analytical application. The front-end coordinates telemetry state maps, while execution boundaries are delegated via an efficient C-Foreign Function Interface (FFI) to a compiled C++ binary layer. The engine evaluates multi-dimensional knapsack matrices under positional budget bounds and an elite-tier restriction limiting roster selection to a maximum of 3 assets per individual national country.
 """)
@@ -27,7 +39,6 @@ class CPlayer(ctypes.Structure):
     ]
 
 def get_optimization_backend():
-    # Dynamic compilation identification based on the deployment host OS
     so_path = os.path.abspath("liboptimizer.so")
     dll_path = os.path.abspath("liboptimizer.dll")
     
@@ -40,7 +51,7 @@ def get_optimization_backend():
 backend_lib = get_optimization_backend()
 
 if backend_lib is None:
-    st.warning("⚠️ Native high-performance binaries (.so/.dll) missing. Please execute the compilation script detailed in the project documentation.")
+    st.warning("⚠️ Native high-performance binaries (.so/.dll) missing. Please ensure optimizer.cpp is in your repository.")
 
 # --- SIDEBAR INTERFACE ---
 st.sidebar.header("Optimization Parameters")
@@ -55,7 +66,6 @@ req_def = int(formation.split("-")[0])
 req_mid = int(formation.split("-")[1])
 req_fwd = int(formation.split("-")[2])
 
-# Feature 4: Strategic Multiplier Profiling
 st.sidebar.markdown("---")
 st.sidebar.subheader("Strategic Profile Weights")
 strategy_profile = st.sidebar.radio(
@@ -90,6 +100,7 @@ fifa_2026_data = [
 
 df = pd.DataFrame(fifa_2026_data)
 
+# FIXES THE MESSY TABLE TITLES FROM YOUR SCREENSHOT
 display_map = {
     "name": "Player Name",
     "position": "Tactical Position",
@@ -108,10 +119,7 @@ if st.button("🚀 Execute Combinatorial Optimization"):
     if backend_lib is None:
         st.error("Execution halted. Native math binary engine interface unlinked.")
     else:
-        # Pre-compute objective vector mappings dynamically before parsing to C layer
         df['calculated_value'] = (df['form_rating'] * w_form) + (df['historical_points'] * 0.1 * w_hist)
-        
-        # Sort array structurally for optimal allocation sequence mapping inside C++ matrix
         df_sorted = df.sort_values(by='calculated_value', ascending=False)
         
         total_records = len(df_sorted)
@@ -127,7 +135,6 @@ if st.button("🚀 Execute Combinatorial Optimization"):
             
         output_indices = (ctypes.c_int * total_records)()
         
-        # Link function parameters and execute foreign binary computation
         backend_lib.execute_knapsack_optimization.argtypes = [
             player_array_type, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.POINTER(ctypes.c_int)
         ]
@@ -143,7 +150,6 @@ if st.button("🚀 Execute Combinatorial Optimization"):
         if not res_df.empty:
             st.success(f"✨ Optimization Engine Complete: Verified Lineup Formed via Native C++ Execution Engine.")
             
-            # KPI Metrics Dashboard
             col1, col2, col3 = st.columns(3)
             col1.metric("Total Roster Assets", f"{len(res_df)} Players")
             col2.metric("Financial Resource Distribution", f"${res_df['cost'].sum()}M / ${budget_limit}M")
@@ -151,7 +157,6 @@ if st.button("🚀 Execute Combinatorial Optimization"):
             
             st.markdown("---")
             
-            # Scannable Component Grid Blocks
             st.subheader(f"🛡️ Target Roster Composition Grid ({formation})")
             card_cols = st.columns(len(res_df))
             for index, (df_idx, row) in enumerate(res_df.iterrows()):
@@ -164,7 +169,7 @@ if st.button("🚀 Execute Combinatorial Optimization"):
             
             st.markdown("---")
             
-            # Metrics Visualization Analytics
+            # Analytics Visuals (FIXED CHART LABELS)
             chart_col1, chart_col2 = st.columns(2)
             with chart_col1:
                 st.subheader("📊 Capital Distribution Layout")
