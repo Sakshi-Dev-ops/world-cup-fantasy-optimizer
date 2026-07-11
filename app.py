@@ -16,7 +16,8 @@ st.markdown("---")
 
 # --- SIDEBAR INTERFACE ---
 st.sidebar.header("⚙️ Optimization Parameters")
-budget_limit = st.sidebar.slider("💰 Total Team Budget ($M)", min_value=40, max_value=150, value=100)
+# Increased default value to 130 so all required top assets fit automatically
+budget_limit = st.sidebar.slider("💰 Total Team Budget ($M)", min_value=60, max_value=150, value=130)
 
 formation = "4-3-3"
 st.sidebar.success(f"📋 Locked Tactical Matrix: **{formation}**")
@@ -103,7 +104,13 @@ if st.button("⚡ Execute Combinatorial Optimization"):
     selected_ids = python_knapsack_optimization(df, budget_limit, req_def, req_mid, req_fwd)
     res_df = df[df['id'].isin(selected_ids)].copy()
     
-    if not res_df.empty:
+    # Check that we actually filled the formation requirements
+    has_gk = (res_df['position'] == 'GK').sum() == 1
+    has_def = (res_df['position'] == 'DEF').sum() == req_def
+    has_mid = (res_df['position'] == 'MID').sum() == req_mid
+    has_fwd = (res_df['position'] == 'FWD').sum() == req_fwd
+
+    if not res_df.empty and has_gk and has_def and has_mid and has_fwd:
         st.success("✅ Optimization Engine Complete: Verified Lineup Formed.")
         
         col1, col2, col3 = st.columns(3)
@@ -115,7 +122,6 @@ if st.button("⚡ Execute Combinatorial Optimization"):
         
         st.subheader(f"🛡️ Target Roster Composition Grid ({formation})")
         
-        # Crash-proof display loop
         for index, row in res_df.iterrows():
             st.info(f"**{row['position']}** — {row['name']} | {row['display_team']} | `Cost: ${row['cost']}M`")
         
@@ -138,4 +144,4 @@ if st.button("⚡ Execute Combinatorial Optimization"):
             })
             st.bar_chart(comparison_df, x="Roster Assembly Method", y="Cumulative Operational Efficiency")
     else:
-        st.error("⚠️ Mathematical optimization constraints cannot be reconciled under current parameters. Try raising your budget limit slider.")
+        st.error(f"⚠️ Budget limit of ${budget_limit}M is too low to satisfy a full {formation} formation with the available player pool. Please increase the budget slider and try again.")
