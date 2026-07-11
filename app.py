@@ -57,8 +57,19 @@ fifa_2026_data = [
 
 df = pd.DataFrame(fifa_2026_data)
 
+# Dictionary mapping for clean, formal table presentation
+display_map = {
+    "name": "Player Name",
+    "position": "Tactical Position",
+    "team": "National Team",
+    "cost": "Market Cost ($M)",
+    "form_rating": "Current Form Rating",
+    "historical_points": "Historical Points Yield"
+}
+df_display = df.rename(columns=display_map)
+
 with st.expander("📊 View Complete Registered 2026 Player Pool Database", expanded=False):
-    st.dataframe(df, use_container_width=True)
+    st.dataframe(df_display, use_container_width=True)
 
 # --- RUN OPTIMIZATION ---
 if st.button("🚀 Execute Combinatorial Optimization"):
@@ -145,7 +156,9 @@ if st.button("🚀 Execute Combinatorial Optimization"):
         chart_col1, chart_col2 = st.columns(2)
         with chart_col1:
             st.subheader("📊 Capital Distribution Layout")
-            st.bar_chart(res_df, x="Name", y="Cost ($M)")
+            # Clear title overrides for Chart 1 axis labels
+            chart1_df = res_df.rename(columns={"Name": "Player Selection", "Cost ($M)": "Financial Allocation ($M)"})
+            st.bar_chart(chart1_df, x="Player Selection", y="Financial Allocation ($M)")
             
         with chart_col2:
             st.subheader("📈 Algorithmic Efficiency Evaluation")
