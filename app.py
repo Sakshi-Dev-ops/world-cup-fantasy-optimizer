@@ -8,23 +8,29 @@ st.title("🏆 World Cup 2026 Fantasy Optimization Engine")
 st.subheader("Created By: Sakshi.M")
 st.markdown("### **Official 2026 FIFA World Cup Player Pool Edition**")
 
-# Elevated description for a professional, academic tone
+# Context Narrative - Formal Summary Paragraph
+st.info("""
+ℹ️ **System Executive Summary:** This engine acts as a predictive analytics platform for the 2026 FIFA World Cup structure, providing professional-grade squad assemblies by cross-examining current athlete performance metrics against historical point valuations. By translating raw form metrics directly into data structures, it mitigates tactical risk while ensuring strict budgetary and positioning requirements are completely fulfilled.
+""")
+
 st.markdown("""
 *Utilizing an advanced mathematical framework engineered with a dynamic programming-based 
 Multi-Constraint Knapsack algorithm to determine globally optimal squad configurations under precise budget limits.*
 """)
 
+st.markdown("---")
+
 # --- SIDEBAR INTERFACE ---
 st.sidebar.header("Optimization Parameters")
 budget_limit = st.sidebar.slider("Total Team Budget ($M)", min_value=40, max_value=150, value=100)
 
-# Feature: Formations Constraint Filter
+# Formations Constraint Filter
 formation = st.sidebar.selectbox(
     "Select Tactical Formation",
     ["4-3-3", "4-4-2", "3-5-2", "5-3-2"]
 )
 
-# Parse formal formation constraints
+# Parse formation constraints
 req_def = int(formation.split("-")[0])
 req_mid = int(formation.split("-")[1])
 req_fwd = int(formation.split("-")[2])
@@ -51,24 +57,19 @@ fifa_2026_data = [
 
 df = pd.DataFrame(fifa_2026_data)
 
-st.subheader("📋 Registered 2026 FIFA World Cup Player Pool")
-st.dataframe(df, use_container_width=True)
+with st.expander("📊 View Complete Registered 2026 Player Pool Database", expanded=False):
+    st.dataframe(df, use_container_width=True)
 
-# --- RUN OPTIMIZATION (Dynamic Programming Knapsack Engine) ---
+# --- RUN OPTIMIZATION ---
 if st.button("🚀 Execute Combinatorial Optimization"):
-    # Predictive formula to evaluate performance variables
     df['calculated_value'] = df['form_rating'] * 0.7 + df['historical_points'] * 0.3
-    
-    # Sort dataset to optimize structural constraint handling safely inside DP boundaries
     df_sorted = df.sort_values(by='calculated_value', ascending=False)
     
     costs = df_sorted['cost'].tolist()
     values = df_sorted['calculated_value'].tolist()
     n = len(df_sorted)
     
-    # Mathematical 2D array generation for deterministic solution tracking
     dp = [[0.0 for _ in range(budget_limit + 1)] for _ in range(n + 1)]
-    
     for i in range(1, n + 1):
         for w in range(budget_limit + 1):
             if costs[i-1] <= w:
@@ -76,21 +77,15 @@ if st.button("🚀 Execute Combinatorial Optimization"):
             else:
                 dp[i][w] = dp[i-1][w]
                 
-    # Backtracking routine verifying formation constraints
     w = budget_limit
     chosen_indices = []
-    
-    count_gk = 0
-    count_def = 0
-    count_mid = 0
-    count_fwd = 0
+    count_gk, count_def, count_mid, count_fwd = 0, 0, 0, 0
     
     for i in range(n, 0, -1):
         if dp[i][w] != dp[i-1][w]:
             pos = df_sorted.iloc[i-1]['position']
             item_cost = costs[i-1]
             
-            # Positional verification
             if pos == "GK" and count_gk < 1:
                 chosen_indices.append(i-1)
                 count_gk += 1
@@ -123,26 +118,37 @@ if st.button("🚀 Execute Combinatorial Optimization"):
         
     if optimized_list:
         res_df = pd.DataFrame(optimized_list)
-        st.success(f"✨ Optimization Engine Complete: Mathematically Verified Lineup Formed for Tactical Grid: {formation}.")
+        st.success(f"✨ Optimization Engine Complete: Verified Lineup Formed for Tactical Grid: {formation}.")
         
+        # Upper KPI Metrics Box
         col1, col2, col3 = st.columns(3)
-        col1.metric("Total Roster Assets", f"{len(res_df)}")
-        col2.metric("Total Financial Allocation", f"${res_df['Cost ($M)'].sum()}M / ${budget_limit}M")
-        col3.metric("Projected Operational Metric", f"{res_df['Overall Value'].sum():.1f}")
+        col1.metric("Total Roster Assets", f"{len(res_df)} Players")
+        col2.metric("Financial Resource Distribution", f"${res_df['Cost ($M)'].sum()}M / ${budget_limit}M")
+        col3.metric("Projected Lineup Efficiency Score", f"{res_df['Overall Value'].sum():.1f}")
         
-        st.subheader(f"Algorithmic World Cup Roster Allocation Model ({formation})")
-        st.table(res_df[["Name", "Position", "Team", "Cost ($M)", "Form", "History"]])
+        st.markdown("---")
         
-        # Display strategic layout metrics side-by-side
+        # High Vis Scannable Lineup Display Block (Replacing boring standard list)
+        st.subheader(f"🛡️ Target Roster Composition Grid ({formation})")
+        card_cols = st.columns(len(res_df))
+        for index, row in res_df.iterrows():
+            with card_cols[index]:
+                st.markdown(f"""
+                ### `{row['Position']}`
+                **{row['Name']}** {row['Team']}  
+                `Budget: ${row['Cost ($M)']}M`  
+                """)
+        
+        st.markdown("---")
+        
+        # Analytics Visuals
         chart_col1, chart_col2 = st.columns(2)
-        
         with chart_col1:
-            st.subheader("Capital Distribution Layout")
+            st.subheader("📊 Capital Distribution Layout")
             st.bar_chart(res_df, x="Name", y="Cost ($M)")
             
         with chart_col2:
             st.subheader("📈 Algorithmic Efficiency Evaluation")
-            
             opt_total = int(res_df['Overall Value'].sum())
             baseline_total = int(opt_total * random.uniform(0.68, 0.76))
             
@@ -151,6 +157,5 @@ if st.button("🚀 Execute Combinatorial Optimization"):
                 "Cumulative Operational Efficiency": [baseline_total, opt_total]
             })
             st.bar_chart(comparison_df, x="Roster Assembly Method", y="Cumulative Operational Efficiency")
-            
     else:
-        st.error("Mathematical optimization constraints cannot be reconciled. Please expand the budget parameters.")
+        st.error("Mathematical optimization constraints cannot be reconciled under current parameters.")
